@@ -38,10 +38,29 @@
     ],
 
   ];
+ 
+  $choices = $_GET;
+  var_dump($choices);
+
+  if(empty($choices)) {
+    $datas = $hotels;
+  } else {
+      if($choices['parking'] === 'true') {
+        $choices['parking'] = true;
+      } else {
+        $choices['parking'] = false;
+      }
+      if ($choices['vote'] === '') {
+        foreach($hotels as $hotel) {
+          if (($hotel['parking'] && $choices['parking']) || (!$hotel['parking'] && !$choices['parking']) ) {
+            $datas[] = $hotel;
+          }
+        }
+      }
+  }
+
 ?>
   
-
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -54,7 +73,35 @@
 </head>
 <body>
   <div class="container py-4">
-    <h1 class="text-center">ELENCO HOTEL</h1>
+    <h1 class="text-center">HOTEL</h1>
+    <form  class="my-4" action="./index.php" method="GET">
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="parking" value="false" id="flexRadioDefault1">
+        <label class="form-check-label" for="flexRadioDefault1">
+          no parking
+        </label>
+      </div>
+      <div class="form-check form-check-inline">
+        <input class="form-check-input" type="radio" name="parking" value="true" id="flexRadioDefault2" >
+        <label class="form-check-label" for="flexRadioDefault2">
+          with parking
+        </label>
+      </div>
+      <div class="form-check form-check-inline">
+        <label for="exampleFormControlInput1" class="form-label">Vote</label>
+        <input type="number" name="vote" class="form-control" id="exampleFormControlInput1" placeholder="number">
+      </div>
+      <div class="form-check form-check-inline">
+        <button class="btn btn-primary" type="submit">Search</button>
+      </div>
+      <div class="form-check form-check-inline">
+        <button class="btn btn-warning" type="reset">Reset</button>
+      </div>
+    </form>
+
+
+    
+
     <table class="table table-striped border border-1 mt-3">
       <thead>
         <tr>
@@ -64,10 +111,10 @@
         </tr>
       </thead>
       <tbody>
-        <?php foreach($hotels as $hotel) : ?>
+        <?php foreach($datas as $data) : ?>
           <tr>
             <?php 
-              foreach($hotel as $key => $value) {
+              foreach($data as $key => $value) {
                 if($key === 'name') {
                   echo "<th scope='row'> $value </th>";
                 } else {
