@@ -40,7 +40,6 @@
   ];
  
   $choices = $_GET;
-  var_dump($choices);
 
   if(empty($choices)) {
     $datas = $hotels;
@@ -50,12 +49,25 @@
       } else {
         $choices['parking'] = false;
       }
+      $datas = [];
       if ($choices['vote'] === '') {
         foreach($hotels as $hotel) {
           if (($hotel['parking'] && $choices['parking']) || (!$hotel['parking'] && !$choices['parking']) ) {
             $datas[] = $hotel;
           }
         }
+      } else {
+        $choices['vote'] = (int)$choices['vote'];
+        foreach($hotels as $hotel) {
+          if 
+          (($hotel['parking'] && $choices['parking'] && $hotel['vote'] >= $choices['vote'] ) || (!$hotel['parking'] && !$choices['parking']) && $hotel['vote'] >= $choices['vote']  ) {
+            $datas[] = $hotel;
+          }
+        }
+        if(empty($datas)) {
+          $datas = $hotels;
+        }
+        
       }
   }
 
@@ -76,8 +88,8 @@
     <h1 class="text-center">HOTEL</h1>
     <form  class="my-4" action="./index.php" method="GET">
       <div class="form-check form-check-inline">
-        <input class="form-check-input" type="radio" name="parking" value="false" id="flexRadioDefault1">
-        <label class="form-check-label" for="flexRadioDefault1">
+        <input class="form-check-input" type="radio" name="parking" value="false" id="flexRadioDefault1" checked>
+        <label class="form-check-label" for="flexRadioDefault1" >
           no parking
         </label>
       </div>
