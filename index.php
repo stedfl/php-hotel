@@ -45,46 +45,44 @@
     $datas = $hotels;
   } else {
     $datas = [];
-    if ($choices['vote'] === '' && !isset($choices['parking'])) {
-      $datas = $hotels;
-      
-    } else if (isset($choices['parking'])){
+
+    if(isset($choices['parking'])) {
       if($choices['parking'] === 'true') {
         $choices['parking'] = true;
       } else {
         $choices['parking'] = false;
-      } 
-      if ($choices['vote'] === '') {
-        foreach($hotels as $hotel) {
+      }
+    }
+    if ($choices['vote'] !== '') {
+      $choices['vote'] = (int)$choices['vote'];
+    }
+
+    if(isset($choices['parking'])) {
+      foreach($hotels as $hotel) {
+        if($choices['vote'] === '') {
           if (($hotel['parking'] && $choices['parking']) || (!$hotel['parking'] && !$choices['parking']) ) {
             $datas[] = $hotel;
           }
-        }
-      } else {
-        $choices['vote'] = (int)$choices['vote'];
-        foreach($hotels as $hotel) {
+        } else {
           if 
           (($hotel['parking'] && $choices['parking'] && $hotel['vote'] >= $choices['vote'] ) || (!$hotel['parking'] && !$choices['parking']) && $hotel['vote'] >= $choices['vote']  ) {
             $datas[] = $hotel;
           }
         }
       }
-    } else if ($choices['vote'] !== '' && !isset($choices['parking'])) {
-      $choices['vote'] = (int)$choices['vote'];
-      foreach($hotels as $hotel) {
-        if 
-        ($hotel['vote'] >= $choices['vote'] ) {
-          $datas[] = $hotel;
-        }
-      }
     } else {
-      if(empty($datas)) {
+      if($choices['vote'] !== '') {
+        foreach($hotels as $hotel) {
+          if 
+          ($hotel['vote'] >= $choices['vote'] ) {
+            $datas[] = $hotel;
+          }
+        }
+      } else {
         $datas = $hotels;
       }
-      
     }
   }
-
 ?>
   
 
@@ -114,8 +112,10 @@
         </label>
       </div>
       <div class="form-check form-check-inline">
-        <label for="exampleFormControlInput1" class="form-label">Vote</label>
-        <input type="number" name="vote" class="form-control" id="exampleFormControlInput1" placeholder="number">
+        <div class="d-flex align-items-center">
+          <label for="exampleFormControlInput1" class="form-label me-2">Vote</label>
+          <input type="number" name="vote" class="form-control" id="exampleFormControlInput1" placeholder="number">
+        </div>
       </div>
       <div class="form-check form-check-inline">
         <button class="btn btn-primary" type="submit">Search</button>
