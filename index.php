@@ -44,12 +44,16 @@
   if(empty($choices)) {
     $datas = $hotels;
   } else {
+    $datas = [];
+    if ($choices['vote'] === '' && !isset($choices['parking'])) {
+      $datas = $hotels;
+      
+    } else if (isset($choices['parking'])){
       if($choices['parking'] === 'true') {
         $choices['parking'] = true;
       } else {
         $choices['parking'] = false;
-      }
-      $datas = [];
+      } 
       if ($choices['vote'] === '') {
         foreach($hotels as $hotel) {
           if (($hotel['parking'] && $choices['parking']) || (!$hotel['parking'] && !$choices['parking']) ) {
@@ -64,11 +68,21 @@
             $datas[] = $hotel;
           }
         }
-        if(empty($datas)) {
-          $datas = $hotels;
-        }
-        
       }
+    } else if ($choices['vote'] !== '' && !isset($choices['parking'])) {
+      $choices['vote'] = (int)$choices['vote'];
+      foreach($hotels as $hotel) {
+        if 
+        ($hotel['vote'] >= $choices['vote'] ) {
+          $datas[] = $hotel;
+        }
+      }
+    } else {
+      if(empty($datas)) {
+        $datas = $hotels;
+      }
+      
+    }
   }
 
 ?>
@@ -88,7 +102,7 @@
     <h1 class="text-center">HOTEL</h1>
     <form  class="my-4" action="./index.php" method="GET">
       <div class="form-check form-check-inline">
-        <input class="form-check-input" type="radio" name="parking" value="false" id="flexRadioDefault1" checked>
+        <input class="form-check-input" type="radio" name="parking" value="false" id="flexRadioDefault1">
         <label class="form-check-label" for="flexRadioDefault1" >
           no parking
         </label>
@@ -113,39 +127,42 @@
 
 
     
-
-    <table class="table table-striped border border-1 mt-3">
-      <thead>
-        <tr>
-          <?php foreach($hotels[0] as $key => $value) : ?>
-          <th scope="col"><?php echo ucfirst($key) ?></th>
-          <?php endforeach ?>
-        </tr>
-      </thead>
-      <tbody>
-        <?php foreach($datas as $data) : ?>
+    <?php if(!empty($datas)): ?> 
+      <table class="table table-striped border border-1 mt-3">
+        <thead>
           <tr>
-            <?php 
-              foreach($data as $key => $value) {
-                if($key === 'name') {
-                  echo "<th scope='row'> $value </th>";
-                } else {
-                  if($key === 'parking') {
-                    if ($value) {
-                      echo "<td> Si </td>";
-                    } else {
-                      echo "<td> No </td>";
-                    }
+            <?php foreach($hotels[0] as $key => $value) : ?>
+            <th scope="col"><?php echo ucfirst($key) ?></th>
+            <?php endforeach ?>
+          </tr>
+        </thead>
+        <tbody>
+          <?php foreach($datas as $data) : ?>
+            <tr>
+              <?php 
+                foreach($data as $key => $value) {
+                  if($key === 'name') {
+                    echo "<th scope='row'> $value </th>";
                   } else {
-                    echo "<td> $value </td>";
+                    if($key === 'parking') {
+                      if ($value) {
+                        echo "<td> Si </td>";
+                      } else {
+                        echo "<td> No </td>";
+                      }
+                    } else {
+                      echo "<td> $value </td>";
+                    }
                   }
                 }
-              }
-            ?>
-          </tr>
-        <?php endforeach ?>
-      </tbody> 
-    </table>
+              ?>
+            </tr>
+          <?php endforeach ?>
+        </tbody> 
+      </table>
+      <?php else: ?>
+        <h3>Nessun risultato</h3>
+      <?php endif;  ?>
   </div>
   
 </body>
