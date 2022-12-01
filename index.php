@@ -53,36 +53,41 @@
   <title>Hotel</title>
 </head>
 <body>
-  <h1>Elenco Hotel</h1>
-  <table class="table">
-  <thead>
-    <tr>
-      <?php foreach($hotels[0] as $key => $value) : ?>
-      <th scope="col"><?php echo ucfirst($key) ?></th>
-      <?php endforeach ?>
-    </tr>
-  </thead>
-  <tbody>
-    <?php foreach($hotels as $hotel) : ?>
-      <tr>
-        <?php foreach($hotel as $key => $value) : ?>
-          <td scope="row">
-            <?php if($key === 'parking') {
-              if ($value) {
-                echo 'Si';
-              } else {
-                echo 'No';
+  <div class="container py-4">
+    <h1 class="text-center">ELENCO HOTEL</h1>
+    <table class="table table-striped border border-1 mt-3">
+      <thead>
+        <tr>
+          <?php foreach($hotels[0] as $key => $value) : ?>
+          <th scope="col"><?php echo ucfirst($key) ?></th>
+          <?php endforeach ?>
+        </tr>
+      </thead>
+      <tbody>
+        <?php foreach($hotels as $hotel) : ?>
+          <tr>
+            <?php 
+              foreach($hotel as $key => $value) {
+                if($key === 'name') {
+                  echo "<th scope='row'> $value </th>";
+                } else {
+                  if($key === 'parking') {
+                    if ($value) {
+                      echo "<td> Si </td>";
+                    } else {
+                      echo "<td> No </td>";
+                    }
+                  } else {
+                    echo "<td> $value </td>";
+                  }
+                }
               }
-            } else {
-              echo $value;
-            }
             ?>
-          </td>
+          </tr>
         <?php endforeach ?>
-      </tr>
-    <?php endforeach ?>
-  </tbody>
-</table>
+      </tbody> 
+    </table>
+  </div>
   
 </body>
 </html>
