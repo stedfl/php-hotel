@@ -44,43 +44,28 @@
   if(empty($choices)) {
     $datas = $hotels;
   } else {
-    $datas = [];
-
+    
+    $filteredData = [];
     if(isset($choices['parking'])) {
-      if($choices['parking'] === 'true') {
-        $choices['parking'] = true;
-      } else {
-        $choices['parking'] = false;
-      }
-    }
-    if ($choices['vote'] !== '') {
-      $choices['vote'] = (int)$choices['vote'];
-    }
+      $selectedParking = ($choices['parking'] === 'true');
 
-    if(isset($choices['parking'])) {
       foreach($hotels as $hotel) {
-        if($choices['vote'] === '') {
-          if (($hotel['parking'] && $choices['parking']) || (!$hotel['parking'] && !$choices['parking']) ) {
-            $datas[] = $hotel;
-          }
-        } else {
-          if 
-          (($hotel['parking'] && $choices['parking'] && $hotel['vote'] >= $choices['vote'] ) || (!$hotel['parking'] && !$choices['parking']) && $hotel['vote'] >= $choices['vote']  ) {
-            $datas[] = $hotel;
-          }
+        if($hotel['parking'] === $selectedParking) {
+          $filteredData [] = $hotel;
         }
       }
     } else {
-      if($choices['vote'] !== '') {
-        foreach($hotels as $hotel) {
-          if 
-          ($hotel['vote'] >= $choices['vote'] ) {
-            $datas[] = $hotel;
-          }
-        }
-      } else {
-        $datas = $hotels;
+      $filteredData = $hotels;
+    }
+
+    $datas = [];
+    if($choices['vote'] !== '') {
+      foreach($filteredData as $data) {
+        if($data['vote'] >= (int)$choices['vote'])
+        $datas[] = $data;
       }
+    } else {
+      $datas = $filteredData;
     }
   }
 ?>
@@ -146,7 +131,7 @@
                   } else {
                     if($key === 'parking') {
                       if ($value) {
-                        echo "<td> Si </td>";
+                        echo "<td> Yes </td>";
                       } else {
                         echo "<td> No </td>";
                       }
